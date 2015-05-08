@@ -181,6 +181,7 @@ func (p *Prerender) PreRenderHandler(rw http.ResponseWriter, or *http.Request) {
 	e.Check(err)
 
 	rw.Header().Set("Content-Type", res.Header.Get("Content-Type"))
+	rw.WriteHeader(res.StatusCode)
 
 	defer res.Body.Close()
 
