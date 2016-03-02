@@ -4,14 +4,13 @@ package prerender
 
 import (
 	"compress/gzip"
+	e "github.com/jqatampa/gadget-arm/errors"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"regexp"
 	"strings"
-
-	e "github.com/jqatampa/gadget-arm/errors"
 )
 
 // Options provides you with the ability to specify a custom Prerender.io URL
@@ -64,6 +63,7 @@ func (p *Prerender) ShouldPrerender(or *http.Request) bool {
 	bufferAgent := or.Header.Get("X-Bufferbot")
 	isRequestingPrerenderedPage := false
 	reqURL := strings.ToLower(or.URL.String())
+	hasEscapedFragment := false
 
 	// No user agent, don't prerender
 	if userAgent == "" {
@@ -82,8 +82,12 @@ func (p *Prerender) ShouldPrerender(or *http.Request) bool {
 		}
 	}
 
+	if _, ok := or.URL.Query()["_escaped_fragment_"]; ok {
+		hasEscapedFragment = true
+	}
+
 	// Buffer Agent or requesting an excaped fragment, request prerender
-	if bufferAgent != "" || or.URL.Query().Get("_escaped_fragment_") != "" {
+	if bufferAgent != "" || hasEscapedFragment {
 		isRequestingPrerenderedPage = true
 	}
 
