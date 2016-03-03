@@ -91,9 +91,9 @@ func (p *Prerender) ShouldPrerender(or *http.Request) bool {
 		isRequestingPrerenderedPage = true
 	}
 
-	// Cralwer, request prerender
+	// Crawler, request prerender
 	for _, crawlerAgent := range crawlerUserAgents {
-		if strings.Contains(crawlerAgent, strings.ToLower(userAgent)) {
+		if strings.Contains(strings.ToLower(userAgent), crawlerAgent) {
 			isRequestingPrerenderedPage = true
 			break
 		}
